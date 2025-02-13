@@ -1,0 +1,33 @@
+{
+  "name": "pipboy",
+  "version": "1.0.0",
+  "description": "![fallout_pipboy_screen](http://pipboy.fedirko.pro/reference_live.gif)",
+  "main": "gulpfile.js",
+  "type": "module",
+  "dependencies": {
+    "del": "^8.0.0",
+    "gulp": "^5.0.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-cli": "^3.0.0",
+    "gulp-rename": "^2.0.0"
+  },
+  "devDependencies": {
+    "gulp-minify": "^3.0.0",
+    "gulp-sass": "^6.0.0",
+    "sass": "^1.83.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ultrinnan/PipBoy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ultrinnan/PipBoy/issues"
+  },
+  "homepage": "https://github.com/ultrinnan/PipBoy#readme"
+}

@@ -1,0 +1,106 @@
+@use "../helpers/variables" as vars;
+@use "sass:color";
+@use "sass:math";
+
+$track-radius: 0 !default;
+$contrast: 5% !default;
+
+@mixin shadow($shadow-size, $shadow-blur, $shadow-color) {
+  box-shadow: $shadow-size $shadow-size $shadow-blur $shadow-color, 0 0 $shadow-size color.adjust($shadow-color, $lightness: 5%);
+}
+
+@mixin track {
+  cursor: pointer;
+  height: vars.$track-height;
+  transition: all .2s ease;
+  width: vars.$track-width;
+}
+
+@mixin thumb {
+  @include shadow(vars.$thumb-shadow-size, vars.$thumb-shadow-blur, vars.$thumb-shadow-color);
+  background: vars.$thumb-color;
+  border: vars.$thumb-border-width solid vars.$thumb-border-color;
+  border-radius: vars.$thumb-radius;
+  cursor: pointer;
+  height: vars.$thumb-height;
+  width: vars.$thumb-width;
+}
+
+[type='range'] {
+  -webkit-appearance: none;
+  margin: math.div(vars.$thumb-height, 2) 0;
+  width: vars.$track-width;
+
+  &:focus {
+    outline: 0;
+
+    &::-webkit-slider-runnable-track {
+      background: color.adjust(vars.$track-color, $lightness: vars.$contrast);
+    }
+
+    &::-ms-fill-lower {
+      background: vars.$track-color;
+    }
+
+    &::-ms-fill-upper {
+      background: color.adjust(vars.$track-color, $lightness: vars.$contrast);
+    }
+  }
+
+  &::-webkit-slider-runnable-track {
+    @include track;
+    @include shadow(vars.$track-shadow-size, vars.$track-shadow-blur, vars.$track-shadow-color);
+    background: vars.$track-color;
+    border: vars.$track-border-width solid vars.$track-border-color;
+    border-radius: vars.$track-radius;
+  }
+
+  // Pre-calculate the inner `calc` in a separate variable
+  $inner-calc: -(vars.$track-border-width) * 2 + vars.$track-height;
+
+  // Use the result in the final calculation
+  &::-webkit-slider-thumb {
+    @include thumb;
+    -webkit-appearance: none;
+    margin-top: calc(#{math.div($inner-calc, 2)} - #{math.div(vars.$thumb-height, 2)});
+  }
+
+  &::-moz-range-track {
+    @include track;
+    @include shadow(vars.$track-shadow-size, vars.$track-shadow-blur, vars.$track-shadow-color);
+    background: vars.$track-color;
+    border: vars.$track-border-width solid vars.$track-border-color;
+    border-radius: vars.$track-radius;
+  }
+
+  &::-moz-range-thumb {
+    @include thumb;
+  }
+
+  &::-ms-track {
+    @include track;
+    background: transparent;
+    border-color: transparent;
+    border-width: math.div(vars.$thumb-height, 2) 0;
+    color: transparent;
+  }
+
+  &::-ms-fill-lower {
+    @include shadow(vars.$track-shadow-size, vars.$track-shadow-blur, vars.$track-shadow-color);
+    background: color.adjust(vars.$track-color, $lightness: -(vars.$contrast));
+    border: vars.$track-border-width solid vars.$track-border-color;
+    border-radius: vars.$track-radius * 2;
+  }
+
+  &::-ms-fill-upper {
+    @include shadow(vars.$track-shadow-size, vars.$track-shadow-blur, vars.$track-shadow-color);
+    background: vars.$track-color;
+    border: vars.$track-border-width solid vars.$track-border-color;
+    border-radius: vars.$track-radius * 2;
+  }
+
+  &::-ms-thumb {
+    @include thumb;
+    margin-top: 0;
+  }
+}

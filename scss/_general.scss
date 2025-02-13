@@ -1,0 +1,538 @@
+@use "./helpers/variables" as vars;
+
+html {
+  height: 100%;
+}
+
+::-moz-selection, ::selection {
+  background: lightgreen;
+}
+
+body {
+  min-height: 100vh;
+  background: black;
+  font-family: 'Droid Sans',sans-serif;
+  font-size: 8pt;
+  color: green;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+a{
+  text-decoration: none;
+}
+
+.note{
+  display: none;
+  text-align: center;
+  padding: 24px 0;
+}
+
+.main{
+  width: 800px;
+  height: 480px;
+  overflow: hidden;
+  user-select: none;
+
+  video{
+    width: 800px;
+    height: 480px;
+  }
+
+  .content {
+    position: relative;
+
+    .screen-reflection {
+      position: absolute;
+      width: 800px;
+      height: 480px;
+      background: #fff;
+      z-index: 99;
+      opacity: 0.07;
+      pointer-events: none;
+    }
+
+    .scan {
+      position: absolute;
+      width: 100%;
+      height: 100px;
+      background: linear-gradient(transparent,rgba(127, 241, 42, 0.5));
+      animation: scan;
+      animation-duration: 4s;
+      animation-iteration-count: infinite;
+      top: -100px;
+      z-index: 99;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    .nav {
+      position: absolute;
+      width: 600px;
+      top: 0;
+      left: 100px;
+      border-bottom: 2px solid vars.$light_green;
+      z-index: 10;
+      padding: 24px 0 0;
+      display: flex;
+      justify-content: center;
+      &:before,
+      &:after{
+        position: absolute;
+        left: 0;
+        bottom: -24px;
+        display: block;
+        content: '';
+        width: 2px;
+        height: 24px;
+        background: linear-gradient(vars.$light_green, transparent);
+      }
+      &:after{
+        left: auto;
+        right: 0;
+      }
+
+      .nav_el {
+        border: 2px solid transparent;
+        cursor: pointer;
+        color: vars.$light_green;
+        font-size: 16pt;
+        margin: 0 16px;
+        height: 16px;
+        position: relative;
+        bottom: -2px;
+        padding: 0 4px;
+        &.active {
+          border: 2px solid vars.$light_green;
+          border-bottom: 2px solid #000;
+        }
+
+        .text{
+          position: relative;
+          bottom: 8px;
+          padding: 0 4px;
+          background: black;
+          margin: 0;
+          &.setup{
+            width: 20px;
+            height: 20px;
+            background: black url("/images/gear.png") center no-repeat;
+          }
+        }
+      }
+    }
+
+    .stat_nav{
+      padding: 0 80px;
+
+      .stat{
+        font-size: 22px;
+        opacity: 0.5;
+        margin: 0 4px;
+        &.active{
+          opacity: 1;
+        }
+      }
+    }
+
+    .screen {
+      position: relative;
+      display: none;
+      width: 600px;
+      height: 480px;
+      margin: auto;
+      padding: 56px 16px 16px;
+      box-sizing: border-box;
+      &.active{
+        display: block;
+      }
+
+      .header{
+        font-size: 22px;
+        text-align: center;
+      }
+
+      .boy_thumb{
+        margin: 16px;
+        background: url(/images/VaultBoy.png) center no-repeat;
+        background-size: contain;
+        height: 360px;
+        opacity: 0.5;
+      }
+    }
+  }
+}
+
+.radio{
+  .list{
+    width: 50%;
+    float: left;
+
+    .wave{
+      font-size: 20px;
+      margin: 8px 0;
+      padding: 0 0 0 24px;
+      position: relative;
+      opacity: 0.75;
+      cursor: pointer;
+      &:before{
+        position: absolute;
+        left: 0;
+        content: '';
+        display: block;
+        width: 20px;
+        height: 20px;
+        background: url("/images/icons/play-button.png") center no-repeat;
+        background-size: contain;
+      }
+      &.current{
+        opacity: 1;
+        color: vars.$light_green;
+      }
+      &.active{
+        &:before{
+          background: url("/images/icons/pause.png") center no-repeat;
+          background-size: contain;
+        }
+      }
+    }
+
+    .list_title{
+      background: #000;
+      text-align: center;
+      width: 64px;
+      margin: auto;
+      position: relative;
+      z-index: 1;
+      top: 8px;
+    }
+    .music_list{
+      position: relative;
+      border: 1px solid green;
+      margin: 0 8px 0 0;
+      padding: 8px 0 4px 4px;
+      height: 250px;
+      overflow-y: scroll;
+      scrollbar-width: thin;
+      scrollbar-color: vars.$thumbBG vars.$scrollbarBG;
+
+      &::-webkit-scrollbar {
+        width: 11px;
+      }
+      &::-webkit-scrollbar-track {
+        background: vars.$scrollbarBG;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: vars.$thumbBG ;
+        border-radius: 6px;
+        border: 3px solid vars.$scrollbarBG;
+      }
+
+      .track{
+        list-style: none;
+        opacity: 0.75;
+        margin-bottom: 4px;
+        &.current{
+          opacity: 1;
+          color: vars.$light_green;
+        }
+      }
+
+    }
+  }
+  #audioPlayer{
+    display: none;
+  }
+  .player{
+    width: 50%;
+    height: 100%;
+    float: left;
+    background: url("/images/radiowaves.gif") right bottom no-repeat;
+    .controls{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 24px auto;
+    }
+    .control{
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      &.shuffle{
+        background: url("/images/icons/shuffle.png") center no-repeat;
+        background-size: contain;
+        &.off{
+          opacity: 0.5;
+        }
+      }
+      &.prev{
+        background: url("/images/icons/back.png") center no-repeat;
+        background-size: contain;
+      }
+      &.play{
+        background: url("/images/icons/play-button.png") center no-repeat;
+        background-size: contain;
+        &.active{
+          background: url("/images/icons/pause.png") center no-repeat;
+          background-size: contain;
+        }
+      }
+      &.next{
+        background: url("/images/icons/next.png") center no-repeat;
+        background-size: contain;
+      }
+      &.repeat{
+        background: url("/images/icons/replay.png") center no-repeat;
+        background-size: contain;
+        &.off{
+          opacity: 0.5;
+        }
+      }
+      &.mute{
+        background: url("/images/icons/mute.png") center no-repeat;
+        background-size: contain;
+        opacity: 0.25;
+        width: 25px;
+        height: 25px;
+        &.muted{
+          opacity: 1;
+        }
+      }
+    }
+    .volume{
+      width: calc(100% - 25px - 16px);
+    }
+  }
+}
+
+.vaultboy {
+  background: url('/images/vaultboy.gif') no-repeat;
+  background-size: cover;
+  width: 143px;
+  height: 190px;
+  position: relative;
+  margin: 40px auto 0;
+
+  .bar1,
+  .bar2,
+  .bar3,
+  .bar4,
+  .bar5,
+  .bar6 {
+    width: 32px;
+    height: 8px;
+    background: vars.$light_green;
+    position: absolute;
+  }
+
+  .bar1 {
+    left: 56px;
+    top: -16px;
+  }
+
+  .bar2 {
+    left: 56px;
+    bottom: -16px;
+  }
+
+  .bar3 {
+    left: -40px;
+    top: 62px;
+  }
+
+  .bar4 {
+    right: -40px;
+    top: 62px;
+  }
+
+  .bar5 {
+    left: -40px;
+    top: 160px;
+  }
+
+  .bar6 {
+    right: -40px;
+    top: 160px;
+  }
+}
+
+.supplies {
+  position: relative;
+  margin: 16px auto 0;
+  display: flex;
+  span {
+    display: block;
+    margin: 0 8px 0 0;
+    background: vars.$light_green;
+    font-size: 16px;
+    padding: 6px 8px 4px;
+    color: #000;
+  }
+}
+
+.hud-bar {
+  position: relative;
+  margin: 8px auto 0;
+  color: vars.$light_green;
+  display: flex;
+
+  .hp,
+  .exp,
+  .ap {
+    display: block;
+    font-size: 16px;
+    padding: 6px 8px 4px;
+    background: rgba(0, 255, 0, 0.2);
+    min-width: 130px;
+  }
+
+  .exp {
+    margin: 0 8px;
+    width: 100%;
+    &:after {
+      content: "";
+      display: inline-block;
+      width: 120px;
+      height: 8px;
+      border: 2px solid vars.$light_green;
+      margin-left: 8px;
+    }
+  }
+
+  .ap {
+    text-align: right;
+  }
+}
+
+.info-bar {
+  position: relative;
+  margin: 32px auto 0;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+
+  div {
+    height: 48px;
+    display: block;
+    margin: 0 2px;
+    font-size: 16px;
+    text-align: center;
+    position: relative;
+    &:after{
+      content: '';
+      display: block;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      background: rgba(0, 255, 0, 0.2);
+    }
+    .number {
+      display: block;
+      margin: 26px auto 0;
+    }
+
+  }
+
+  div {
+    color: vars.$light_green;
+  }
+
+  .weapon, .helmet {
+    width: 48px;
+  }
+  .weapon {
+    background: url('/images/pipboy-gun2.png') center no-repeat;
+    background-size: 40px;
+  }
+  .helmet {
+    background: url('/images/pipboy-helmet2.png') center no-repeat;
+    background-size: 40px;
+  }
+
+  .aim, .shield, .voltage, .nuclear {
+    width: 26px;
+    height: auto;
+  }
+  .aim {
+    margin-right: 16px;
+    background: url('/images/pipboy-aim2.png') no-repeat 5px 5px;
+    background-size: 16px 16px;
+  }
+
+  .shield {
+    background: url('/images/pipboy-shield2.png') no-repeat 5px 5px;
+    background-size: 16px 16px;
+  }
+
+  .voltage {
+    background: url('/images/pipboy-voltage2.png') no-repeat 5px 5px;
+    background-size: 16px 16px;
+  }
+
+  .nuclear {
+    background: url('/images/pipboy-nuclear2.png') no-repeat 5px 5px;
+    background-size: 16px 16px;
+  }
+
+}
+
+#map{
+  width: 100%;
+  height: 400px;
+}
+
+@keyframes scan {
+  from {
+    top: -100px;
+  }
+
+  to {
+    top: 480px;
+  }
+}
+
+//-----------------------------------------------------------------------------------
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  padding: 24px 0;
+
+  .footer_author{
+    display: block;
+    text-decoration: none;
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    &:before{
+      display: block;
+      width: 16px;
+      height: 16px;
+      content: '';
+      opacity: 0.1;
+      background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAElBMVEWdnZ1eXl6amppkZGSWlpZpaWlopvhGAAAAKklEQVQI12MQBAFhBQasDGNjY1MQQ9hJSUmJAcRQAJIIBlwKpphMcxAMANzeCZElu9TgAAAAAElFTkSuQmCC');
+    }
+    &:hover:before{
+      opacity: 1;
+      transition: 0.5s;
+    }
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  footer{
+    display: none;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .note{
+    display: block;
+  }
+}
